@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+div#BOARD
+{
+	background:#CCC;
+	border:#999 1px solid;
+	width:920px;
+	height:520px;
+	padding:24px;
+	margin:0px auto;
+	margin-top:80px;
+}
+div#BOARD > div
+{
+	background: url(joe2.jpg) no-repeat;
+	border:#000 1px solid;
+	width:120px;
+	height:190px;
+	float:left;
+	margin:10px;
+	padding:20px;
+	font-size:64px;
+	cursor:pointer;
+	text-align:center;
+	background-position: center;
+	
+}
+div#text
+{
+margin-top:200px;
+}
+</style>
+<script>
+
+//Timer
+
+var second = 0;  
+var minutes = 0;  
+var hour = 0;  
+function timer()
+{  
+
+var a = document.getElementById('clock').value;  
+
+if(a == 'Start')
+{  
+document.getElementById('clock').value='Pause'; 
+}  
+else if(a =='Pause')
+{  
+document.getElementById('clock').value='Start'; 
+} 
+STOPCLOCK(); 
+} 
+
+
+
+
+
+function STOPCLOCK()
+{ 
+var x=document.getElementById('clock').value; 
+if (x=='Pause')
+{  
+   second++;  
+  if (second == 60) 
+  { 
+   second = 0;  
+   minutes = minutes + 1;  
+  }  
+  else
+  { 
+   minutes = minutes; 
+  }  
+  if (minutes == 60) 
+  {  
+   minutes = 0;   
+   hour += 1;  
+  }  
+if (second<=9) 
+{ 
+second = "0" + second;   
+}  
+ var watch=document.getElementById('watch'); 
+
+ watch.value= ((hour<=9) ? "0"+hour : hour) + " : " + ((minutes<=9) ? "0" + minutes : minutes) + " : " + second;  
+
+SD=window.setTimeout("STOPCLOCK();", 1000); 
+}  
+}  
+
+
+
+
+
+
+
+
+function resume()
+{   
+var watch=document.getElementById('watch');  
+second = 0;  
+minutes = 0; 
+hour = 0; 
+watch.value='00 : 00 : 00';  
+timer();  
+}  
+
+
+//timer
+
+var ARRAY_BOARD = ['A','A','B','B','C','C','D','D','E','E'];
+
+var VALUES_BOARD = [];
+
+var ID_BOARD = [];
+
+var flap_ff = 0;
+
+Array.prototype.ff_SHUFFLE = function()
+{
+    var ik = this.length, j, temp;
+	
+    while(--ik > 0)
+	{
+        j = Math.floor(Math.random() * (ik+1));
+        temp = this[j];
+        this[j] = this[ik];
+        this[ik] = temp;
+    }
+}
+function FRESH_BOARD()
+{
+	flap_ff = 0;
+	
+	var RESULT = '';
+	
+    ARRAY_BOARD.ff_SHUFFLE();
+	
+	for(var i = 0; i < ARRAY_BOARD.length; i++)
+	{
+		RESULT += '<div id="ff_'+i+'" onclick="memoryFlipff(this,\''+ARRAY_BOARD[i]+'\')"></div>';
+	}
+	document.getElementById('BOARD').innerHTML = RESULT;
+}
+function memoryFlipff(ff,val)
+{
+	if(ff.innerHTML == "" && VALUES_BOARD.length < 2)
+	{
+		ff.style.background = '#FFF';
+		ff.innerHTML = val;
+		if(VALUES_BOARD.length == 0)
+		{
+			VALUES_BOARD.push(val);
+			ID_BOARD.push(ff.id);
+		}
+		else if(VALUES_BOARD.length == 1)
+		{
+			VALUES_BOARD.push(val);
+			ID_BOARD.push(ff.id);
+			if(VALUES_BOARD[0] == VALUES_BOARD[1])
+			{
+				flap_ff += 2;
+				VALUES_BOARD = [];
+            	ID_BOARD = [];
+				if(flap_ff == ARRAY_BOARD.length)
+				{
+					
+					alert("Yipee you worn. You cleared in " + watch.value + " time!");
+					document.getElementById('BOARD').innerHTML = "";
+					FRESH_BOARD();
+				}
+			}
+			else 
+			{
+				function BACK()
+				{
+				    var ss1 = document.getElementById(ID_BOARD[0]);
+				    var ss2 = document.getElementById(ID_BOARD[1]);
+				    ss1.style.background = 'url(ff_bg.jpg) no-repeat';
+            	    ss1.innerHTML = "";
+				    ss2.style.background = 'url(ff_bg.jpg) no-repeat';
+            	    ss2.innerHTML = "";
+				    VALUES_BOARD = [];
+            	    ID_BOARD = [];
+				}
+				setTimeout(BACK, 700);
+			}
+		}
+	}
+}
+
+
+
+</script>
+</head>
+<body background="joe1.jpg" onload="timer()">
+<div><center><p><font size="60" style="color:Yellow">Game of Concentration</font></p></center></div>
+<center><div>
+<input type="label" value="00 : 00 : 00" id="watch"/> <br><br>
+<input type="button" size="20" value="Start" id="clock"  onClick="timer()"/> 
+<input type="button" value="resume" id="resume"  onClick="resume()"/>  
+</div></center>
+<div id="BOARD"> </div>
+
+<script>FRESH_BOARD();</script>
+</body>
+</html>
